@@ -5,12 +5,13 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+//геттеры, сеттеры, toString, equals/hashCode, конструктор со всеми аргументами через Lombok
 @Data
 @AllArgsConstructor
 public class Task {
-    private static int id;
-    private static String title;
-    private static String description;
-    private static LocalDate dueDate;
-    private static TaskStatus status;
+    private final int id;
+    private String title;
+    private String description;
+    private LocalDate dueDate;
+    private TaskStatus status;
 }
