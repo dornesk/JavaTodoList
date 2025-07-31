@@ -8,6 +8,7 @@ public class MemoryTaskRepository implements TaskRepository {
     // Хранилище задач: ключ — ID задачи, значение — сама задача
     private final Map<Integer, Task> tasks = new HashMap<>();
 
+    @Override
     public void addTask(Task task) {
         validateTask(task);
         if (tasks.containsKey(task.getId())) {
@@ -16,12 +17,14 @@ public class MemoryTaskRepository implements TaskRepository {
         tasks.put(task.getId(), task);
     }
 
+    @Override
     public Task getTaskById(int id) {
         validateId(id);
         ensureTaskExists(id);
         return tasks.get(id);
     }
 
+    @Override
     public void updateTask(Task task) {
         validateTask(task);
         ensureTaskExists(task.getId());
@@ -29,12 +32,14 @@ public class MemoryTaskRepository implements TaskRepository {
         tasks.replace(task.getId(), task);
     }
 
+    @Override
     public void deleteTask(int id) {
         validateId(id);
         ensureTaskExists(id);
         tasks.remove(id);
     }
 
+    @Override
     public List<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());//возврат копии значений, не трогая мапу
     }
