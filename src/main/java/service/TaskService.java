@@ -12,4 +12,6 @@ public interface TaskService {
     List<Task> getAllTasks();
     Task getTaskById(int id);
     List<Task> filterTasksByStatus(TaskStatus status);
+    List<Task> getAllTasksSortedByDueDate();
+    List<Task> getAllTasksSortedByStatus();
 }

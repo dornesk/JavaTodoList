@@ -6,6 +6,7 @@ import service.TaskService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 public class TaskController {
     private final TaskService service;
@@ -60,7 +61,7 @@ public class TaskController {
         try {
             Task task = new Task(id, title, description, dueDate, status);
             service.createTask(task);
-            System.out.println("Task added succesfully");
+            System.out.println("Task added successfully");
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid ID format. It should be a number");
@@ -72,19 +73,88 @@ public class TaskController {
     }
 
     private void handleList() {
-
+        try {
+            List<Task> tasks = service.getAllTasks();
+            if (tasks.isEmpty()) {
+                System.out.println("No tasks found");
+            } else {
+                System.out.println("Tasks list: ");
+                tasks.forEach(task -> System.out.printf(
+                        "ID: %d, Title: %s, Description: %s, Due Date: %s, Status: %s%n",
+                        task.getId(),
+                        task.getTitle(),
+                        task.getDescription(),
+                        task.getDueDate(),
+                        task.getStatus()
+                ));
+            }
+        } catch (Exception e) {
+            System.out.println("Error while listing tasks: " + e.getMessage());
+        }
     }
 
     private void handleEdit() {
+        try {
+            int id = promptInt("Enter ID of the task to edit: ");
+            Task existingTask = service.getTaskById(id);
 
+            if (existingTask == null) {
+                System.out.println("Task not found with ID: " + id);
+            } else {
+                String newTitle = promptNotBlank("Enter new title: ");
+                String newDescription = promptNotBlank("Enter new description: ");
+                LocalDate newDueDate = promptDate("Enter new due date (yyyy-MM-dd): ");
+                TaskStatus newStatus = promptStatus("Enter new status (TODO, IN_PROGRESS, DONE): ");
+
+                Task updatedTask = new Task(id, newTitle, newDescription, newDueDate, newStatus);
+                service.updateTask(updatedTask);
+                System.out.println("Task updated successfully.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid ID format.");
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid status or data. " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error while editing task: " + e.getMessage());
+        }
     }
 
     private void handleDelete() {
+        try {
+            int id = promptInt("Enter ID of the task to delete: ");
+            Task existingTask = service.getTaskById(id);
 
+            if (existingTask == null) {
+                System.out.println("Task not found with ID: " + id);
+            } else {
+                service.deleteTask(id);
+                System.out.println("Task deleted successfully.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid ID format.");
+        } catch (Exception e) {
+            System.out.println("Error while deleting task: " + e.getMessage());
+        }
     }
 
     private void handleFilter() {
+        try {
+            TaskStatus status = promptStatus("Enter status to filter (TODO, IN_PROGRESS, DONE): ");
+            var filteredTasks = service.filterTasksByStatus(status);
 
+            if (filteredTasks.isEmpty()) {
+                System.out.println("No tasks found with status: " + status);
+            } else {
+                System.out.println("Tasks with status " + status + ":");
+                filteredTasks.forEach(System.out::println);
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid status. Please enter TODO, IN_PROGRESS, or DONE.");
+        } catch (Exception e) {
+            System.out.println("Error while filtering tasks: " + e.getMessage());
+        }
     }
 
     private void handleSort() {
