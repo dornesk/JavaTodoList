@@ -1,9 +1,24 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-.gradle/
-build/
-out/
-.idea/
-*.iml
+# Gradle build directories
+/build/
+/out/
+/.gradle/
+
+# IntelliJ IDEA files
+/.idea/
+/*.iml
+
+# Compiled Java classes
 *.class
+
+# Temporary files
+/tmp/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Binary files
+*.bin
+
+# Log files
+*.log
