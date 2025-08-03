@@ -1,24 +1,15 @@
-# Gradle build directories
-/build/
-/out/
-/.gradle/
-
-# IntelliJ IDEA files
+# IntelliJ IDEA
 /.idea/
 /*.iml
 
-# Compiled Java classes
-*.class
+# Gradle
+/.gradle/
+/build/
+/out/
 
-# Temporary files
-/tmp/
-
-# System files
+# OS
 .DS_Store
 Thumbs.db
 
-# Binary files
-*.bin
-
-# Log files
+# Misc
 *.log
