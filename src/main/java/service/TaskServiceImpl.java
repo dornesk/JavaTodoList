@@ -4,26 +4,42 @@ import model.Task;
 import model.TaskStatus;
 import repository.TaskRepository;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository repository;
     public TaskServiceImpl(TaskRepository repository) {
-        this.repository = Objects.requireNonNull(repository, "Repository must not be null");
+        this.repository = repository;
     }
 
     @Override
     public void createTask(Task task) {
-        Objects.requireNonNull(task, "Task must not be null");
+        if (task == null) {
+            throw new NullPointerException("Task cannot be null");
+        }
+        if (task.getDueDate() == null) {
+            throw new IllegalArgumentException("Due date cannot be null");
+        }
+        if (task.getDueDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Due date cannot be in the past");
+        }
         repository.addTask(task);
     }
 
     @Override
     public void updateTask(Task task) {
-        Objects.requireNonNull(task, "Task must not be null");
+        if (task == null) {
+            throw new NullPointerException("Task cannot be null");
+        }
+        if (task.getDueDate() == null) {
+            throw new IllegalArgumentException("Due date cannot be null");
+        }
+        if (task.getDueDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Due date cannot be in the past");
+        }
         repository.updateTask(task);
     }
 
@@ -44,7 +60,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> filterTasksByStatus(TaskStatus status) {
-        Objects.requireNonNull(status, "Status must not be null");
+        if (status == null) {
+            throw new NullPointerException("Task cannot be null");
+        }
         return repository.getAllTasks().stream()
                 .filter(task -> task.getStatus() == status)
                 .collect(Collectors.toList());
