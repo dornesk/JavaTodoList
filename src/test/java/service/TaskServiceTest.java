@@ -35,6 +35,12 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("Создание задачи с null выбрасывает NullPointerException")
+    void createTask_withNull_shouldThrowException() {
+        assertThrows(NullPointerException.class, () -> service.createTask(null));
+    }
+
+    @Test
     @DisplayName("Успешное обновление задачи")
     void updateTask_shouldCallRepositoryUpdateTask() {
         Task task = new Task(2, "Updated", "Desc", LocalDate.now(), TaskStatus.IN_PROGRESS);
@@ -45,6 +51,12 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("Обновление задачи с null выбрасывает NullPointerException")
+    void updateTask_withNull_shouldThrowException() {
+        assertThrows(NullPointerException.class, () -> service.updateTask(null));
+    }
+
+    @Test
     @DisplayName("Успешное удаление задачи")
     void deleteTask_shouldCallRepositoryDeleteTask() {
         int taskId = 3;
@@ -52,6 +64,41 @@ class TaskServiceTest {
         service.deleteTask(taskId);
 
         verify(repository, times(1)).deleteTask(taskId);
+    }
+
+    @Test
+    @DisplayName("Удаление задачи с несуществующим ID вызывает репозиторий")
+    void deleteTask_withNonExistentId_shouldCallRepository() {
+        int nonExistentId = 999;
+        // Предполагаем, что репозиторий ничего не делает, но вызов есть
+        service.deleteTask(nonExistentId);
+        verify(repository, times(1)).deleteTask(nonExistentId);
+    }
+
+    @Test
+    @DisplayName("Получение всех задач возвращает список из репозитория")
+    void getAllTasks_shouldReturnRepositoryList() {
+        List<Task> mockList = List.of(
+                new Task(1, "T1", "D1", LocalDate.now(), TaskStatus.TODO),
+                new Task(2, "T2", "D2", LocalDate.now(), TaskStatus.DONE)
+        );
+
+        when(repository.getAllTasks()).thenReturn(mockList);
+
+        List<Task> result = service.getAllTasks();
+
+        assertEquals(mockList, result);
+    }
+
+    @Test
+    @DisplayName("Получение задачи с несуществующим ID возвращает null")
+    void getTaskById_withNonExistentId_shouldReturnNull() {
+        int nonExistentId = 999;
+        when(repository.getTaskById(nonExistentId)).thenReturn(null);
+
+        Task result = service.getTaskById(nonExistentId);
+
+        assertNull(result);
     }
 
     @Test
@@ -71,6 +118,12 @@ class TaskServiceTest {
         assertTrue(filtered.contains(task1));
         assertTrue(filtered.contains(task3));
         assertFalse(filtered.contains(task2));
+    }
+
+    @Test
+    @DisplayName("Фильтрация задач с null статусом выбрасывает NullPointerException")
+    void filterTasksByStatus_withNull_shouldThrowException() {
+        assertThrows(NullPointerException.class, () -> service.filterTasksByStatus(null));
     }
 
     @Test

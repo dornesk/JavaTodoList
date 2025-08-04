@@ -6,21 +6,24 @@ import repository.TaskRepository;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository repository;
     public TaskServiceImpl(TaskRepository repository) {
-        this.repository = repository;
+        this.repository = Objects.requireNonNull(repository, "Repository must not be null");
     }
 
     @Override
     public void createTask(Task task) {
+        Objects.requireNonNull(task, "Task must not be null");
         repository.addTask(task);
     }
 
     @Override
     public void updateTask(Task task) {
+        Objects.requireNonNull(task, "Task must not be null");
         repository.updateTask(task);
     }
 
@@ -41,6 +44,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> filterTasksByStatus(TaskStatus status) {
+        Objects.requireNonNull(status, "Status must not be null");
         return repository.getAllTasks().stream()
                 .filter(task -> task.getStatus() == status)
                 .collect(Collectors.toList());
