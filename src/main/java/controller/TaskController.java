@@ -158,7 +158,33 @@ public class TaskController {
     }
 
     private void handleSort() {
+        try {
+            String sortType = promptNotBlank("""
+                Enter sort type:
+                - 'due' to sort by due date
+                - 'status' to sort by task status
+                """).toLowerCase();
 
+            List<Task> sortedTasks;
+
+            switch (sortType) {
+                case "due" -> sortedTasks = service.getAllTasksSortedByDueDate();
+                case "status" -> sortedTasks = service.getAllTasksSortedByStatus();
+                default -> {
+                    System.out.println("Invalid sort type.");
+                    return;
+                }
+            }
+
+            if (sortedTasks.isEmpty()) {
+                System.out.println("No tasks to display.");
+            } else {
+                sortedTasks.forEach(System.out::println);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error while sorting tasks: " + e.getMessage());
+        }
     }
 
     private String promptNotBlank(String prompt) {
